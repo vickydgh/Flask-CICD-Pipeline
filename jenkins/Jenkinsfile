@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = 'us-east-2'
+        ECR_REGISTRY = '050752643577.dkr.ecr.us-east-2.amazonaws.com'
+        ECR_REPO = 'flask-app'
+        IMAGE_TAG = "dev-${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vickydgh/Flask-CICD-Pipeline.git'
+            }
+        }
+
+        stage('Build & Push Docker') {
+            steps {
+                script {
+                    echo "Logging in to ECR..."
+                    sh """
+                        aws ecr get-login-password --region $AWS_REGION | \
+                        docker login --username AWS --password-stdin $ECR_REGISTRY
+                    """
+
+                    echo "Building Docker image..."
+                    sh "docker build -t $ECR_REPO:$IMAGE_TAG ."
+
+                    echo "Tagging Docker image..."
+                    sh "docker tag $ECR_REPO:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG"
+
+                    echo "Pushing Docker image to ECR..."
+                    sh "docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG"
+                }
+            }
+        }
+
+        stage('Deploy to EKS') {
+            steps {
+                script {
+                    echo "Updating kubeconfig..."
+                    sh "aws eks update-kubeconfig --region $AWS_REGION --name devops-eks"
+
+                    echo "Deploying to Kubernetes..."
+                    sh "kubectl set image deployment/flask-app flask-app=$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG -n default"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment succeeded!"
+        }
+        failure {
+            echo "❌ Deployment failed!"
+        }
+    }
+}
