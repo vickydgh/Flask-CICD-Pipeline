@@ -1,0 +1,9 @@
+# Terraform directories and state
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Optional: OS-specific or IDE files
+*.log
+*.DS_Store
