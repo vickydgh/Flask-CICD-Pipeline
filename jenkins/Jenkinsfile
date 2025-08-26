@@ -50,8 +50,8 @@ pipeline {
                             aws eks update-kubeconfig --region ${AWS_REGION} --name devops-eks
 
                             echo "Deploying to EKS..."
-                            kubectl apply -f k8s/deployment.yaml
-                            kubectl apply -f k8s/service.yaml
+                            kubectl apply -f k8s/flask-deployment.yaml
+                            kubectl apply -f k8s/flask-service.yaml
                         """
                     }
                 }
