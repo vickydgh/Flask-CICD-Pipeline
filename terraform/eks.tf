@@ -10,7 +10,7 @@ module "eks" {
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
 
-  cluster_endpoint_public_access_cidrs = ["223.187.112.186/32"]
+  cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
 
   # Add access entry for devops-user
   access_entries = {
