@@ -36,22 +36,6 @@ flowchart LR
     E -->|Service Exposure| F[Load Balancer / Public Endpoint]
     F -->|Access| G[End Users]
 ```
-## 📂 Project Structure
-
-├── app/                      # Flask application source code
-│   ├── app.py
-│   ├── requirements.txt
-│   └── Dockerfile
-├── k8s/                      # Kubernetes manifests
-│   ├── flask-deployment.yaml
-│   └── flask-service.yaml
-├── jenkins/                  # Jenkins pipeline script
-│   └── Jenkinsfile
-├── terraform/                # Infrastructure as Code
-│   ├── vpc.tf
-│   ├── eks.tf
-│   └── iam.tf
-└── README.md                 # Project documentation
 
 ## 🚀 Deployment Workflow  
 
